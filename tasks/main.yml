@@ -1,0 +1,30 @@
+---
+# tasks file for nginx-proxy
+- name: "Install Nginx"
+  include_tasks: "{{ ansible_os_family }}_install.yml"
+
+- name: "Create .well-known"
+  file:
+    path: "/var/www/{{ item.name }}/.well-known"
+    state: directory
+    mode: "0755"
+  loop: "{{ nginx.virtual_hosts }}"
+
+- name: "Upload proxy config"
+  template:
+    src: proxy.conf.j2
+    dest: "/etc/nginx/conf.d/{{ item.name }}.conf"
+  loop: "{{ nginx.virtual_hosts }}"
+  notify: "Nginx restart"
+
+- name: "Nginx service"
+  service:
+    name: nginx.service
+    enabled: True
+    state: started
+
+- name: "Enable Certbot timer"
+  service:
+    name: certbot-renew.timer
+    enabled: True
+

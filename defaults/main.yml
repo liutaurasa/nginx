@@ -1,0 +1,9 @@
+---
+# defaults file for nginx-proxy
+nginx:
+  letsencrypt: True
+  virtual_hosts:
+    - name: vhost1
+      proxy:
+        target_port: 8080
+        ssl_redirect: True
