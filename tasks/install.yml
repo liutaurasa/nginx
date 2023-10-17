@@ -1,0 +1,7 @@
+---
+- name: Install Nginx on RedHat
+  package:
+    name: "{{ nginx[ansible_os_family]['packages'] }}"
+    state: "{{ packages_state | default('present') }}"
+  tags:
+    - packages

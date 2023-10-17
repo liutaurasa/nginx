@@ -1,2 +1,9 @@
 ---
 # vars file for nginx-proxy
+nginx:
+  RedHat:
+    packages: ['nginx']
+    user: nginx
+  Debian:
+    packages: ['nginx']
+    user: www-data

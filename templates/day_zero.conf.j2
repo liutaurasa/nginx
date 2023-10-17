@@ -1,0 +1,8 @@
+# TEMPORARY FILE BEFORE OBTAINING CERTIFICATES
+
+server {
+    listen          80;
+    server_name     {{ ([_vhost['name']] + _vhost['aliases'] | default([]) ) | join(' ') }};
+
+    return 404;
+}

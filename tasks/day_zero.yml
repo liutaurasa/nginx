@@ -1,0 +1,36 @@
+---
+- name: Get installed certbot certificates
+  include_role:
+    name: letsencrypt-certbot
+    tasks_from: get_certs.yml
+  tags:
+    - nginx
+    - nginx_config
+
+- block:
+    - name: Create proxy configuration for "{{ _vhost['name'] }}"
+      template:
+        src: day_zero.conf.j2 
+        dest: "/etc/nginx/conf.d/{{ _vhost['name'] }}.conf"
+        owner: "{{ nginx[ansible_os_family]['user'] }}"
+        group: root
+        mode: "0640"
+        force: False
+    
+    - name: Get Let's Encrypt certificates
+      include_role:
+        name: letsencrypt-certbot
+        tasks_from: nginx.yml
+      vars:
+        _domain: "{{ _vhost }}"
+  rescue:
+    - name: Remove day_zero "{{ _vhost['name'] }}" proxy configuration file
+      file:
+        path: /etc/nginx/conf.d/{{ _vhost['name'] }}.conf
+        state: absent
+  when:
+    - _vhost['ssl'] | bool
+    - certbot_certs_installed[_vhost['name']] is not defined
+  tags:
+    - nginx
+    - nginx_config

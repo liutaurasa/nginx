@@ -1,0 +1,19 @@
+---
+- name: Initial proxy vhost configuration (before certbot)
+  include_tasks: day_zero.yml
+  tags:
+    - nginx
+    - nginx_config
+
+- name: Create SSL proxy configuration for "{{ _vhost['name'] }}"
+  template:
+    src: proxy.conf.j2 
+    dest: "/etc/nginx/conf.d/{{ _vhost['name'] }}.conf"
+    owner: "{{ nginx[ansible_os_family]['user'] }}"
+    group: root
+    mode: "0640"
+  notify: "Nginx restart"
+  tags:
+    - nginx
+    - nginx_config
+  
