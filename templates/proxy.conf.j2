@@ -20,6 +20,11 @@ server {
         proxy_send_timeout      300;
         proxy_redirect          off;
         resolver                127.0.0.1;
+{%  if _target['add_headers'] is defined %}
+{%    for _header in _target['add_headers'] %}
+        add_header              {{ _header['name'] }} {{ _header['value'] }};
+{%    endfor %}
+{%  endif %}
     }
 {% endfor %}
 
