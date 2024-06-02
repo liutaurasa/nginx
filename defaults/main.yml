@@ -7,3 +7,12 @@ nginx_virtual_hosts:
         target_port: 8080
         target_server: localhost
         ssl_redirect: True
+
+nginx_proxy_set_headers:
+    - {name: 'Host',              value: '$host'}
+    - {name: 'X-Real-IP',         value: '$remote_addr'}
+    - {name: 'X-Forwarded-For',   value: '$proxy_add_x_forwarded_for'}
+    - {name: 'X-Forwarded-Host',  value: '$http_host'}
+    - {name: 'X-Forwarded-Proto', value: '$scheme'}
+    - {name: 'SSL_PROTOCOL',      value: '$ssl_protocol'}
+    - {name: 'Connection',        value: '“”'}
