@@ -1,4 +1,11 @@
 ---
+- name: Ngnix | Setbool
+  seboolean:
+    name: httpd_can_network_connect
+    persistent: True
+    state: True
+  when: ansible_os_family == 'RedHat'
+
 - name: Initial proxy vhost configuration (before certbot)
   include_tasks: day_zero.yml
   tags:
