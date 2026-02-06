@@ -10,13 +10,13 @@
 - block:
     - name: Create proxy configuration for "{{ _vhost['name'] }}"
       template:
-        src: day_zero.conf.j2 
+        src: day_zero.conf.j2
         dest: "/etc/nginx/conf.d/{{ _vhost['name'] }}.conf"
         owner: "{{ nginx[ansible_os_family]['user'] }}"
         group: root
         mode: "0640"
-        force: False
-    
+        force: false
+
     - name: Get Let's Encrypt certificates
       include_role:
         name: letsencrypt-certbot
@@ -24,10 +24,20 @@
       vars:
         _domain: "{{ _vhost }}"
   rescue:
-    - name: Remove day_zero "{{ _vhost['name'] }}" proxy configuration file
-      file:
+    - name: Remove day_zero config "{{ _vhost['name'] }}"
+      ansible.builtin.file:
         path: /etc/nginx/conf.d/{{ _vhost['name'] }}.conf
         state: absent
+
+    - name: Display error message
+      debug:
+        var: _certbot_run['stdout_lines']
+
+    - name: Fail the play
+      ansible.builtin.fail:
+        msg: "Failed"
+
+    - meta: end_play
   when:
     - _vhost['ssl'] | bool
     - certbot_certs_installed[_vhost['name']] is not defined
