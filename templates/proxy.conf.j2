@@ -15,7 +15,7 @@ server {
     location {{ _target['location'] | default('/') }} {
         proxy_pass_header       Authorization;
         proxy_pass              http://{{ _target['target_server'] | default('127.0.0.1') }}:{{ _target['target_port'] | default('80') }};
-{% for _header in nginx_proxy_set_headers + (_target['proxy_set_headers'] | default([])) %}
+{% for _header in [nginx_proxy_set_headers, (_target['proxy_set_headers'] | d(nginx_proxy_set_headers))] | community.general.lists_mergeby('name') %}
         proxy_set_header        {{ _header['name'] }} {{ _header['value'] }};
 {% endfor %}
         proxy_http_version      1.1;
