@@ -10,5 +10,4 @@ galaxy_info:
 
 dependencies:
   - role: letsencrypt-certbot
-    when: nginx_letsencrypt | bool | default(True) 
-  
+    when: nginx_letsencrypt | bool | default(True)
