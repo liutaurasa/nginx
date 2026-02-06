@@ -13,6 +13,7 @@
   loop: "{{ nginx_virtual_hosts }}"
   loop_control:
     loop_var: _vhost
+    label: "{{ _vhost['name'] }}"
   tags:
     - nginx
 
@@ -23,6 +24,7 @@
   loop: "{{ nginx_virtual_hosts | selectattr('state', 'defined') | selectattr('state', 'equalto', 'absent') }}"
   loop_control:
     loop_var: _vhost
+    label: "{{ _vhost['name'] }}"
   tags:
     - nginx
     - nginx_config
@@ -32,6 +34,7 @@
   loop: "{{ nginx_virtual_hosts | rejectattr('state', 'undefined') | rejectattr('state', 'equalto', 'absent') | union(nginx_virtual_hosts | selectattr('state', 'undefined')) }}"
   loop_control:
     loop_var: _vhost
+    label: "{{ _vhost['name'] }}"
   tags:
     - nginx
     - nginx_config
@@ -39,9 +42,8 @@
 - name: "Nginx service"
   service:
     name: nginx.service
-    enabled: True
+    enabled: true
     state: started
   ignore_errors: "{{ ansible_check_mode }}"
   tags:
     - nginx
-
