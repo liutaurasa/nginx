@@ -2,8 +2,8 @@
 - name: Ngnix | Setbool
   seboolean:
     name: httpd_can_network_connect
-    persistent: True
-    state: True
+    persistent: true
+    state: true
   when: ansible_os_family == 'RedHat'
 
 - name: Initial proxy vhost configuration (before certbot)
@@ -14,7 +14,7 @@
 
 - name: Create SSL proxy configuration for "{{ _vhost['name'] }}"
   template:
-    src: proxy.conf.j2 
+    src: proxy.conf.j2
     dest: "/etc/nginx/conf.d/{{ _vhost['name'] }}.conf"
     owner: "{{ nginx[ansible_os_family]['user'] }}"
     group: root
@@ -23,4 +23,3 @@
   tags:
     - nginx
     - nginx_config
-  
